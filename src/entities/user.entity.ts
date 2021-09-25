@@ -10,7 +10,7 @@ export class User {
   provider_id: number;
 
   @Column()
-  user_name: string;
+  nick_name: string;
 
   @Column()
   provider: string;
