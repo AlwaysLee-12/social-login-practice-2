@@ -8,6 +8,7 @@ import { UserModule } from './modules/users/users.module';
 import typeormConfig from 'typeorm.config';
 import { APP_FILTER } from '@nestjs/core';
 import { HttpExceptionFilter } from './http-exception.filter';
+import { AllExceptionFilter } from './all-exception.filter';
 
 @Module({
   imports: [
@@ -21,7 +22,7 @@ import { HttpExceptionFilter } from './http-exception.filter';
     AppService,
     {
       provide: APP_FILTER,
-      useClass: HttpExceptionFilter,
+      useClass: AllExceptionFilter,
     },
   ],
 })
