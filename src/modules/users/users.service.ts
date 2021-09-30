@@ -29,7 +29,6 @@ export class UserService {
     provider: string,
   ): Promise<User> {
     const user = this.userRepository.create({
-      provider_id: provider_id,
       nick_name: nick_name,
       provider: provider,
     });
