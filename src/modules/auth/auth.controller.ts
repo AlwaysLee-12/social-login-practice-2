@@ -1,5 +1,7 @@
-import { Controller, Get, Put, Req, UseGuards } from '@nestjs/common';
+import { Controller, Get, Put, Req, Post, UseGuards } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
+import { User } from 'src/entities/user.entity';
+import { AppleAuthGuard } from './apple-auth.guard';
 import { ApiDocs } from './auth.docs';
 import { AuthService } from './auth.service';
 import { JwtAuthGuard } from './jwt-auth.guard';
@@ -20,7 +22,6 @@ export class AuthController {
     let user = await this.authService.validateUser(kakaoUserData.id, 'kakao');
     if (!user) {
       user = await this.authService.createUser(
-        kakaoUserData.id,
         kakaoUserData.profile.kakao_account.profile.nickname,
         'kakao',
       );
@@ -28,18 +29,21 @@ export class AuthController {
     return await this.authService.login(user);
   }
 
-  // @Post('apple')
-  // async appleLogin(@Req() req: any) {
-  //   const appleUserData = this.authService.isValidAppleToken(
-  //     req.headers.authorization,
-  //   );
-  //   if (!appleUserData) return;
-  //   let user = await this.authService.validateUser(appleUserData.id, appleUserData.provider);
-  //   if (!user) {
-  //     user = await this.authService.createUser(appleUserData.id, appleUserData.provider, appleUserData.provider);
-  //   }
-  //   return this.authService.login(user);
-  // }
+  @UseGuards(AppleAuthGuard)
+  @Post('apple')
+  async appleLogin(@Req() req: any) {
+    const appleEmail: string = req.validateTokenResult.email;
+    const changedAsNickName: string = appleEmail.split('@')[0];
+    const userExist: boolean = await this.authService.isUserExist(
+      changedAsNickName,
+      'Apple',
+    );
+    let user: User;
+    if (!userExist) {
+      user = await this.authService.createUser(changedAsNickName, 'Apple');
+    }
+    return this.authService.login(user);
+  }
 
   @Put('logout')
   @ApiDocs.logout('로그아웃')

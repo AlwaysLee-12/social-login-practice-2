@@ -2,11 +2,10 @@ import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { User } from 'src/entities/user.entity';
 import { JwtService } from '@nestjs/jwt';
 import { hash } from 'bcrypt';
-import { HttpService } from '@nestjs/axios';
-import { map } from 'rxjs';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
+import { AxiosClient } from './axios-client';
 
 @Injectable()
 export class AuthService {
@@ -14,12 +13,11 @@ export class AuthService {
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
     private readonly jwtService: JwtService,
-    private readonly httpService: HttpService,
+    private readonly api: AxiosClient,
   ) {}
 
   async validateUser(provider_id: number, provider: string): Promise<any> {
     const user = await this.userRepository.findOne({
-      provider_id: provider_id,
       provider: provider,
     });
 
@@ -27,6 +25,15 @@ export class AuthService {
       return null;
     }
     return user;
+  }
+
+  async isUserExist(nick_name: string, provider: string): Promise<boolean> {
+    const user: User = await this.userRepository.findOne({
+      nick_name: nick_name,
+      provider: provider,
+    });
+    if (!user) return false;
+    return true;
   }
 
   async isValidKakaoToken(access_token_kakao: string): Promise<any> {
@@ -39,32 +46,13 @@ export class AuthService {
     if (!access_token_kakao) {
       throw new UnauthorizedException();
     }
-    const kakaoData: any = this.httpService
-      .get(api_url, {
-        headers: header,
-      })
-      .pipe(map((response) => response.data));
-    return kakaoData.toPromise();
+    const kakaoData: any = this.api.Get(api_url, { headers: header });
+
+    return kakaoData;
   }
 
-  async isValidAppleToken(access_token_apple: string): Promise<any> {
-    const api_url = '애플 url'; //추가하기
-    const header = {
-      Authorization: `Bearer ${access_token_apple}`, //확인 후 수정
-    };
-    if (!access_token_apple) {
-      throw new UnauthorizedException();
-    }
-    return this.httpService.get(api_url, { headers: header }); //확인 후 수정
-  }
-
-  async createUser(
-    provider_id: number,
-    nick_name: string,
-    provider: string,
-  ): Promise<User> {
+  async createUser(nick_name: string, provider: string): Promise<User> {
     const user = new User();
-    user.provider_id = provider_id;
     user.nick_name = nick_name;
     user.provider = provider;
     return await this.userRepository.save(user);
