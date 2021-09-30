@@ -20,6 +20,19 @@ export const ApiDocs: SwaggerMethodDoc<AuthController> = {
       }),
     );
   },
+  appleLogin(summary: string) {
+    return applyDecorators(
+      ApiOperation({
+        summary,
+        description: '애플 로그인 API',
+      }),
+      ApiParam({
+        name: 'req',
+        required: true,
+        description: '애플 로그인 Request Body',
+      }),
+    );
+  },
   logout(summary: string) {
     return applyDecorators(
       ApiOperation({

@@ -1,5 +1,6 @@
-import { HttpException, HttpService, Injectable } from '@nestjs/common';
+import { HttpException, Injectable } from '@nestjs/common';
 import { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios';
+import { HttpService } from '@nestjs/axios';
 
 @Injectable()
 export class AxiosClient {

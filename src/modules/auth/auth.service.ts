@@ -5,7 +5,6 @@ import { hash } from 'bcrypt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
-import { AxiosClient } from './axios-client';
 
 @Injectable()
 export class AuthService {
@@ -13,46 +12,31 @@ export class AuthService {
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
     private readonly jwtService: JwtService,
-    private readonly api: AxiosClient,
   ) {}
+  // async isValidKakaoToken(access_token_kakao: string): Promise<any> {
+  //   const api_url = 'https://kapi.kakao.com/v2/user/me';
+  //   const header = {
+  //     'Content-type': 'application/x-www-form-urlencoded;charset=utf-8',
+  //     'Authorization': `${access_token_kakao}`,
+  //   };
 
-  async validateUser(provider_id: number, provider: string): Promise<any> {
-    const user = await this.userRepository.findOne({
-      provider: provider,
-    });
+  //   if (!access_token_kakao) {
+  //     throw new UnauthorizedException();
+  //   }
+  //   const kakaoData: any = this.api.Get(api_url, { headers: header });
 
-    if (!user) {
-      return null;
-    }
-    return user;
-  }
+  //   return kakaoData;
+  // }
 
-  async isUserExist(nick_name: string, provider: string): Promise<boolean> {
-    const user: User = await this.userRepository.findOne({
+  async createUser(nick_name: string, provider: string): Promise<User> {
+    let user = await this.userRepository.findOne({
       nick_name: nick_name,
       provider: provider,
     });
-    if (!user) return false;
-    return true;
-  }
-
-  async isValidKakaoToken(access_token_kakao: string): Promise<any> {
-    const api_url = 'https://kapi.kakao.com/v2/user/me';
-    const header = {
-      'Content-type': 'application/x-www-form-urlencoded;charset=utf-8',
-      'Authorization': `${access_token_kakao}`,
-    };
-
-    if (!access_token_kakao) {
-      throw new UnauthorizedException();
+    if (user) {
+      return user;
     }
-    const kakaoData: any = this.api.Get(api_url, { headers: header });
-
-    return kakaoData;
-  }
-
-  async createUser(nick_name: string, provider: string): Promise<User> {
-    const user = new User();
+    user = new User();
     user.nick_name = nick_name;
     user.provider = provider;
     return await this.userRepository.save(user);

@@ -1,7 +1,7 @@
 import { UnauthorizedException } from '@nestjs/common';
 import * as jwksClient from 'jwks-rsa';
 import * as jwt from 'jsonwebtoken';
-import jwtDecode, { JwtHeader } from 'jwt-decode';
+import jwtDecode, { InvalidTokenError, JwtHeader } from 'jwt-decode';
 import { AxiosClient } from './axios-client';
 
 export class AppleStrategy {
@@ -44,10 +44,10 @@ export class AppleStrategy {
 
   private ValidateToken(token): void {
     if (token.iss !== 'https://appleid.apple.com') {
-      throw new Error();
+      throw new InvalidTokenError();
     }
     if (token.aud !== this.audience) {
-      throw new Error();
+      throw new InvalidTokenError();
     }
   }
 }
