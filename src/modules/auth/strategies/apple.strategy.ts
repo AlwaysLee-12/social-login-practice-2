@@ -31,13 +31,14 @@ export class AppleStrategy {
     const validKid: string = applePublicKeys.keys.filter(
       (element) => element['kid'] === kid && element['alg'] === alg,
     )[0]?.['kid'];
+    if (!validKid) {
+      throw new InvalidTokenError();
+    }
+
     const key: jwksClient.CertSigningKey | jwksClient.RsaSigningKey =
       await client.getSigningKey(validKid);
     const publicKey: string = key.getPublicKey();
 
-    if (!publicKey) {
-      throw new InvalidTokenError();
-    }
     try {
       const result: IdentityTokenSchema = jwt.verify(
         identity_token,
@@ -47,7 +48,7 @@ export class AppleStrategy {
 
       return result;
     } catch (err) {
-      throw new Error();
+      throw new InvalidTokenError();
     }
   }
 
