@@ -1,4 +1,4 @@
-import { UnauthorizedException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import * as jwksClient from 'jwks-rsa';
 import * as jwt from 'jsonwebtoken';
 import jwtDecode, {
@@ -31,12 +31,15 @@ export type ApplePublicKeyType = {
   }>;
 };
 
+@Injectable()
 export class AppleStrategy {
   private readonly audience: string;
   constructor(private readonly api: AxiosClient) {
     this.audience = 'client_id';
   }
-  public async ValidateTokenAndDecode(identity_token: string): Promise<any> {
+  public async ValidateTokenAndDecode(
+    identity_token: string,
+  ): Promise<IdentityTokenSchema> {
     const tokenDecodedHeader: IdentityTokenHeader =
       jwtDecode<IdentityTokenHeader>(identity_token, {
         header: true,
@@ -58,7 +61,7 @@ export class AppleStrategy {
     const publicKey: string = key.getPublicKey();
 
     if (!publicKey) {
-      throw new UnauthorizedException();
+      throw new InvalidTokenError();
     }
     try {
       const result: IdentityTokenSchema = jwt.verify(

@@ -13,6 +13,7 @@ export class AuthService {
     private readonly userRepository: Repository<User>,
     private readonly jwtService: JwtService,
   ) {}
+  //가드 사용전 구현 코드
   // async isValidKakaoToken(access_token_kakao: string): Promise<any> {
   //   const api_url = 'https://kapi.kakao.com/v2/user/me';
   //   const header = {

@@ -1,7 +1,6 @@
 import { Controller, Get, Put, Req, Post, UseGuards } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
-import { User } from 'src/entities/user.entity';
-import { AppleAuthGuard } from './apple-auth.guard';
+import { AppleAuthGuard, AppleDataSchema } from './apple-auth.guard';
 import { ApiDocs } from './auth.docs';
 import { AuthService } from './auth.service';
 import { JwtAuthGuard } from './jwt-auth.guard';
@@ -29,9 +28,11 @@ export class AuthController {
   @Post('apple')
   @ApiDocs.appleLogin('애플 로그인')
   async appleLogin(@Req() req: any) {
-    const appleEmail: string = req.validateTokenResult.email;
-    const changedAsNickName: string = appleEmail.split('@')[0];
-    const user = await this.authService.createUser(changedAsNickName, 'Apple');
+    const appleData: AppleDataSchema = req.body.appleData;
+    const user = await this.authService.createUser(
+      appleData.nick_name,
+      appleData.provider,
+    );
     return this.authService.login(user);
   }
 
