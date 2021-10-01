@@ -1,11 +1,12 @@
 import { Controller, Get, Put, Req, Post, UseGuards } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
-import { AppleAuthGuard, AppleDataSchema } from './apple-auth.guard';
+import { AppleAuthGuard } from './guards/apple-auth.guard';
 import { ApiDocs } from './auth.docs';
 import { AuthService } from './auth.service';
-import { JwtAuthGuard } from './jwt-auth.guard';
-import { JwtRefreshGuard } from './jwt-refresh-auth.guard';
-import { KakaoAuthGuard } from './kakao-auth.guard';
+import { JwtAuthGuard } from './guards/jwt-auth.guard';
+import { JwtRefreshGuard } from './guards/jwt-refresh-auth.guard';
+import { KakaoAuthGuard } from './guards/kakao-auth.guard';
+import { ProviderDataSchema } from './types/interfaces';
 
 @Controller('auth')
 @ApiTags('Auth API')
@@ -28,7 +29,7 @@ export class AuthController {
   @Post('apple')
   @ApiDocs.appleLogin('애플 로그인')
   async appleLogin(@Req() req: any) {
-    const appleData: AppleDataSchema = req.body.appleData;
+    const appleData: ProviderDataSchema = req.body.appleData;
     const user = await this.authService.createUser(
       appleData.nick_name,
       appleData.provider,

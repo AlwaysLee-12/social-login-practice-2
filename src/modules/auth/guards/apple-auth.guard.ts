@@ -4,12 +4,8 @@ import {
   Injectable,
   UnauthorizedException,
 } from '@nestjs/common';
-import { AppleStrategy, IdentityTokenSchema } from './apple.strategy';
-
-export interface AppleDataSchema {
-  nick_name: string;
-  provider: string;
-}
+import { AppleStrategy } from '../strategies/apple.strategy';
+import { IdentityTokenSchema, ProviderDataSchema } from '../types/interfaces';
 
 @Injectable()
 export class AppleAuthGuard implements CanActivate {
@@ -24,7 +20,7 @@ export class AppleAuthGuard implements CanActivate {
       await this.apple.ValidateTokenAndDecode(token);
 
     const nick_name: string = validateTokenResult.email.split('@')[0];
-    const appleData: AppleDataSchema = {
+    const appleData: ProviderDataSchema = {
       nick_name: nick_name,
       provider: 'Apple',
     };

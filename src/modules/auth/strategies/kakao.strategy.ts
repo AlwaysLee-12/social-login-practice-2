@@ -1,7 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { InvalidTokenError } from 'jwt-decode';
-import { map } from 'rxjs';
-import { AxiosClient } from './axios-client';
+import { AxiosClient } from '../axios-client';
 
 @Injectable()
 export class KaKaoStrategy {
@@ -16,7 +14,6 @@ export class KaKaoStrategy {
     const kakaoRequestApiResult: any = this.api.Get(api_url, {
       headers: header,
     });
-
     return kakaoRequestApiResult;
   }
 }

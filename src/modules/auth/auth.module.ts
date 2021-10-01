@@ -3,13 +3,13 @@ import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
-import { JwtStrategy } from './jwt.strategy';
-import { JwtRefreshStrategy } from './jwt-refresh.strategy';
+import { JwtStrategy } from './strategies/jwt.strategy';
+import { JwtRefreshStrategy } from './strategies/jwt-refresh.strategy';
 import { HttpModule } from '@nestjs/axios';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from 'src/entities/user.entity';
-import { KaKaoStrategy } from './kakao.strategy';
-import { AppleStrategy } from './apple.strategy';
+import { KaKaoStrategy } from './strategies/kakao.strategy';
+import { AppleStrategy } from './strategies/apple.strategy';
 import { AxiosClient } from './axios-client';
 
 @Module({
