@@ -26,6 +26,7 @@ export class KakaoAuthGuard implements CanActivate {
       nick_name: validateTokenResult.properties.nickname,
       provider: 'Kakao',
     };
+    console.log(validateTokenResult);
     request.body = { kakaoData: kakaoData };
     return true;
   }

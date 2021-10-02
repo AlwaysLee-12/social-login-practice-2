@@ -9,8 +9,10 @@ import { ApplePublicKeyType } from '../types/type-alias';
 @Injectable()
 export class AppleStrategy {
   private readonly audience: string;
+  private readonly issue: string;
   constructor(private readonly api: AxiosClient) {
-    this.audience = 'client_id';
+    this.audience = '8BQHKQSA4Y.com.yourname.applelogin';
+    this.issue = 'https://appleid.apple.com';
   }
   public async ValidateTokenAndDecode(
     identity_token: string,
@@ -53,7 +55,7 @@ export class AppleStrategy {
   }
 
   private ValidateToken(token: IdentityTokenSchema): void {
-    if (token.iss !== 'https://appleid.apple.com') {
+    if (token.iss !== this.issue) {
       throw new InvalidTokenError();
     }
     if (token.aud !== this.audience) {

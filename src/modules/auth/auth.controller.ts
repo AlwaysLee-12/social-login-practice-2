@@ -48,6 +48,8 @@ export class AuthController {
   @ApiDocs.getProfile('프로필 조회')
   getProfile(@Req() req: any) {
     return req.user;
+
+    Math.random().toString(36).substring(2, 11);
   }
 
   @UseGuards(JwtRefreshGuard)
