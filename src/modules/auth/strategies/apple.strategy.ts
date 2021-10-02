@@ -4,14 +4,14 @@ import * as jwt from 'jsonwebtoken';
 import jwtDecode, { InvalidTokenError } from 'jwt-decode';
 import { AxiosClient } from '../axios-client';
 import { IdentityTokenHeader, IdentityTokenSchema } from '../types/interfaces';
-import { ApplePublicKeyType } from '../types/type-alias';
+import { ApplePublicKeyType } from '../types/interfaces';
 
 @Injectable()
 export class AppleStrategy {
   private readonly audience: string;
   private readonly issue: string;
   constructor(private readonly api: AxiosClient) {
-    this.audience = '8BQHKQSA4Y.com.yourname.applelogin';
+    this.audience = 'com.yourname.meetU';
     this.issue = 'https://appleid.apple.com';
   }
   public async ValidateTokenAndDecode(
@@ -46,6 +46,7 @@ export class AppleStrategy {
         identity_token,
         publicKey,
       ) as IdentityTokenSchema;
+      //console.log(result);
       this.ValidateToken(result);
 
       return result;

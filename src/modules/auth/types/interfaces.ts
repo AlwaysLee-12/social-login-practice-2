@@ -20,3 +20,10 @@ export interface ProviderDataSchema {
   nick_name: string;
   provider: string;
 }
+
+//{ keys: Array<{ [key: string]: string }> }
+export interface ApplePublicKeyType {
+  keys: Array<{
+    [key: string]: string;
+  }>;
+}
