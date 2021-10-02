@@ -11,6 +11,7 @@ import { User } from 'src/entities/user.entity';
 import { KaKaoStrategy } from './strategies/kakao.strategy';
 import { AppleStrategy } from './strategies/apple.strategy';
 import { AxiosClient } from './axios-client';
+import { Collection } from 'src/entities/collection.entity';
 
 @Module({
   imports: [
@@ -20,7 +21,7 @@ import { AxiosClient } from './axios-client';
       secret: process.env.JWT_ACCESS_TOKEN_SECRET,
       signOptions: { expiresIn: process.env.JWT_ACCESS_TOKEN_EXPIRATION },
     }),
-    TypeOrmModule.forFeature([User]),
+    TypeOrmModule.forFeature([User, Collection]),
   ],
   controllers: [AuthController],
   providers: [

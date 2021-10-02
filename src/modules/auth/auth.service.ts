@@ -5,12 +5,17 @@ import { hash } from 'bcrypt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
+import { Collection } from 'src/entities/collection.entity';
 
 @Injectable()
 export class AuthService {
   constructor(
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
+
+    @InjectRepository(Collection)
+    private readonly collectionRepository: Repository<Collection>,
+
     private readonly jwtService: JwtService,
   ) {}
   //가드 사용전 구현 코드
@@ -40,7 +45,13 @@ export class AuthService {
     user = new User();
     user.nick_name = nick_name;
     user.provider = provider;
-    return await this.userRepository.save(user);
+    await this.userRepository.save(user);
+
+    const collection = new Collection();
+    collection.userId = user.id;
+    await this.collectionRepository.save(collection);
+
+    return user;
   }
 
   async login(user: User) {
