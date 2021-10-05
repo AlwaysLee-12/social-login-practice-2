@@ -10,7 +10,14 @@ const config: TypeOrmModuleOptions = {
   password: process.env.USER_PASSWORD,
   database: process.env.DATABASE,
   entities: [__dirname + '/**/*.entity.{js,ts}'],
-  synchronize: true,
+  migrations: [__dirname + 'src/migrations/*.ts'],
+  cli: {
+    migrationsDir: __dirname + '/src/migrations',
+  },
+  autoLoadEntities: true,
+  charset: 'utf8mb4',
+  synchronize: false,
+  logging: process.env.NODE_ENV !== 'production',
 };
 
 export default config;
