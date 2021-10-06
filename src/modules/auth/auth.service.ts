@@ -45,13 +45,7 @@ export class AuthService {
     user = new User();
     user.nick_name = nick_name;
     user.provider = provider;
-    await this.userRepository.save(user);
-
-    const collection = new Collection();
-    collection.userId = user.id;
-    await this.collectionRepository.save(collection);
-
-    return user;
+    return await this.userRepository.save(user);
   }
 
   async login(user: User) {
