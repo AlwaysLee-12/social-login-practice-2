@@ -1,7 +1,7 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import * as jwksClient from 'jwks-rsa';
 import * as jwt from 'jsonwebtoken';
-import jwtDecode, { InvalidTokenError } from 'jwt-decode';
+import jwtDecode from 'jwt-decode';
 import { AxiosClient } from '../axios-client';
 import { IdentityTokenHeader, IdentityTokenSchema } from '../types/interfaces';
 import { ApplePublicKeyType } from '../types/interfaces';
@@ -34,7 +34,7 @@ export class AppleStrategy {
       (element) => element['kid'] === kid && element['alg'] === alg,
     )[0]?.['kid'];
     if (!validKid) {
-      throw new InvalidTokenError();
+      throw new HttpException('Invalid Token', HttpStatus.UNAUTHORIZED);
     }
 
     const key: jwksClient.CertSigningKey | jwksClient.RsaSigningKey =
@@ -51,16 +51,16 @@ export class AppleStrategy {
 
       return result;
     } catch (err) {
-      throw new InvalidTokenError();
+      throw new HttpException('Invalid Token', HttpStatus.UNAUTHORIZED);
     }
   }
 
   private ValidateToken(token: IdentityTokenSchema): void {
     if (token.iss !== this.issue) {
-      throw new InvalidTokenError();
+      throw new HttpException('Invalid Token', HttpStatus.UNAUTHORIZED);
     }
     if (token.aud !== this.audience) {
-      throw new InvalidTokenError();
+      throw new HttpException('Invalid Token', HttpStatus.UNAUTHORIZED);
     }
   }
 }

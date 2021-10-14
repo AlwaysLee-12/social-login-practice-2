@@ -1,7 +1,8 @@
 import {
   ExecutionContext,
+  HttpException,
+  HttpStatus,
   Injectable,
-  UnauthorizedException,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 
@@ -15,7 +16,7 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
   handleRequest(err, user, info) {
     //console.log(user + '' + info);
     if (err || !user) {
-      throw err || new UnauthorizedException('Invalid Token Error');
+      throw err || new HttpException('Invalid Token', HttpStatus.UNAUTHORIZED);
     }
     return user;
   }
